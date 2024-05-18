@@ -10,7 +10,7 @@ interface mechanicDocument extends Document{
     verified: boolean;
     address: string;
     tokens:string[]
-    role: "admin" | "car_owner" | "mechanic"
+    role: string
 }
 
 interface methods{
@@ -66,5 +66,5 @@ mechanicSchema.methods.comparePassword = async function(password){
   return  await compare(password, this.password)
 }
 
-const mechanicModel = model("user", mechanicSchema);
+const mechanicModel = model("Mechanic", mechanicSchema);
 export default mechanicModel;
