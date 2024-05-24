@@ -6,21 +6,11 @@ interface mechanicDocument extends Document{
     lastName:string;
     email:string;
     password:string;
-    verified:boolean; // if the user has verified his email
     phoneNumber: number;
+    verified: boolean;
     address: string;
     tokens:string[]
     role: string
-    businessName: string;
-    businessAddress: string;
-    associationIdNumber: number
-    workshopAddress: string;
-    nationality: string;
-    state: string;
-    homeAddress: string;
-    companyImage: string;
-    associationIdCard: string;
-    bussinessPermit: string;
 }
 
 interface methods{
@@ -53,7 +43,6 @@ const mechanicSchema = new Schema<mechanicDocument, {}, methods>({
     verified:{
         type: Boolean,
         default: false
-        
     },
     address:{
         type: String,
