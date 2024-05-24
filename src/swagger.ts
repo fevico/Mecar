@@ -14,7 +14,42 @@ const options = {
         ],
         components:{
             schemas:{
-                
+                Users:{
+                    type: "object",
+                    required: ["firstName", "lastName", "email", "password", "phoneNumber"],
+                    properties:{
+                        firstName:{ 
+                            type: "string",
+                            format: "name",
+                            default: "John",
+                            description: "User's first name"
+                        },
+                        lastName:{ 
+                            type: "string",
+                            format: "name",
+                            default: "John",
+                            description: "User's last name"
+                        },
+                        email:{ 
+                            type: "string",
+                            format: "email",
+                            default: "example@example.com",
+                            description: "User's email address"
+                        },
+                        password:{
+                            type: "string",
+                            format: "password",
+                            description: "User's password",
+                            default: "examplePassword"
+                        },
+                        phoneNumber:{
+                            type: "string",
+                            format: "mobile",
+                            description: "User's phone number",
+                            default: "45234567890"
+                        }
+                    }
+                },
             },
             responses:{
                 200:{
@@ -55,6 +90,7 @@ const options = {
         }]
     },
     apis:[ 
+        "./src/routes/auth.ts",
    ]
 };
 
