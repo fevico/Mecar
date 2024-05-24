@@ -10,7 +10,7 @@ interface userDocument extends Document{
     verified: boolean;
     address: string;
     tokens:string[]
-    role: "admin" | "car_owner" | "mechanic"
+    role: string
 }
 
 interface methods{
@@ -51,7 +51,7 @@ const userSchema = new Schema<userDocument, {}, methods>({
 
     role:{
         type: String,
-        default: "car_owner"
+        default: "carOwner"
     }
 })
 
@@ -66,5 +66,5 @@ userSchema.methods.comparePassword = async function(password){
   return  await compare(password, this.password)
 }
 
-const userModel = model("user", userSchema);
+const userModel = model("CarOwners", userSchema);
 export default userModel;

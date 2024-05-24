@@ -1,6 +1,6 @@
 import {connect} from "mongoose"
 
-const uri = "mongodb://127.0.0.1:27017/Mecar"
+const uri = process.env.MONGO_URI as string
 connect(uri).then(() =>{
     console.log('db connected succesfully.')
 }).catch(err =>{
