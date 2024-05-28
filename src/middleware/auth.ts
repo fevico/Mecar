@@ -1,7 +1,7 @@
 import { RequestHandler } from "express";
 import userModel from "src/model/carOwner";
 import { sendErrorRes } from "src/utils/helper";
-import jwt from 'jsonwebtoken'
+import jwt, { JsonWebTokenError, TokenExpiredError } from 'jsonwebtoken'
 import mechanicModel from "src/model/mechanic";
 
 interface UserProfile {
@@ -21,6 +21,8 @@ interface UserProfile {
     }
 }
 
+const JWT_SECRET = process.env.JWT_SECRET!;
+
 export const isAuth: RequestHandler = async (req, res, next) => {
     const authToken = req.headers.authorization;
     if (!authToken || !authToken.startsWith('Bearer ')) {
@@ -33,7 +35,7 @@ export const isAuth: RequestHandler = async (req, res, next) => {
     }
   
     try {
-      const payload = jwt.verify(token, 'secret') as { id: string };
+      const payload = jwt.verify(token, JWT_SECRET) as { id: string };
       let user = await userModel.findById(payload.id);
       if (!user) {
         user = await mechanicModel.findById(payload.id);
@@ -53,8 +55,14 @@ export const isAuth: RequestHandler = async (req, res, next) => {
       };
   
       next();
-    } catch (err) {
-      console.error('Error during token verification or user lookup:', err);
-      return sendErrorRes(res, 'Unauthorized request!', 403);
+    } catch (error) {
+        if(error instanceof TokenExpiredError){
+            return sendErrorRes(res, "Session expired!", 401)
+        }
+    
+        if(error instanceof JsonWebTokenError){
+            return sendErrorRes(res, "unauthorized access!", 401)
+        }
+        next(error)
+      }
     }
-  };

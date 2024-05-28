@@ -63,6 +63,36 @@ const mechanicSchema = new Schema<mechanicDocument, {}, methods>({
     role:{
         type: String,
         default: "mechanic"
+    },
+    businessName:{
+        type: String
+    },
+    businessAddress:{
+        type: String
+    },
+    associationIdCard:{
+        type: String
+    },
+    associationIdNumber:{
+        type: Number
+    },
+    workshopAddress:{
+        type: String
+    },
+    nationality:{
+        type: String
+    },
+    state:{
+        type: String
+    },
+    homeAddress:{
+        type: String
+    },
+    companyImage:{
+        type: String
+    }, 
+    bussinessPermit:{
+        type: String
     }
 })
 

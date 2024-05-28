@@ -11,6 +11,7 @@ import {
 import jwt from "jsonwebtoken";
 import ForgetPasswordTokenModel from "src/model/passwordResetToken";
 
+
 export const create: RequestHandler = async (req, res) => {
   const { firstName, lastName, email, password, phoneNumber, role } = req.body;
 
@@ -107,8 +108,6 @@ export const signIn: RequestHandler = async (req, res) => {
   res.json({
     profile: {
       id: user._id,
-      firstName: user.firstName,
-      lastName: user.lastName,
       email: user.email,
       role: user.role,
       verified: user.verified,
@@ -117,6 +116,7 @@ export const signIn: RequestHandler = async (req, res) => {
   });
   // const refreshToken = jwt.sign(payload, JWT_SECRET);
 };
+
 
 export const generateForgetPasswordToken: RequestHandler = async (req, res) => {
   const { email } = req.body;
@@ -180,45 +180,11 @@ export const resetPassword: RequestHandler = async (req, res) => {
   res.json({ message: "Password reset successfully!" });
 };
 
-export const updateMechanicProfile: RequestHandler = async (req, res) => {
-  const {
-    userId,
-    businessAddress,
-    businessName,
-    bussinessPermit,
-    associationIdNumber,
-    nationality,
-    associationIdCard,
-    companyImage,
-    state,
-    homeAddress,
-    workshopAddress,
-    address,
-  } = req.body;
-  const mechanic = await mechanicModel.findById(userId);
-  if (!mechanic) {
-    return sendErrorRes(res, "User record not found!", 404);
-  }
-  const updateMech = await mechanicModel.findByIdAndUpdate(userId, {
-    businessAddress,
-    businessName,
-    bussinessPermit,
-    associationIdNumber,
-    nationality,
-    associationIdCard,
-    companyImage,
-    state,
-    homeAddress,
-    workshopAddress,
-    address,
-  });
-  if (!updateMech)
-    return sendErrorRes(res, "Could not update user profile!", 404);
-  res.json({ message: "Profile updated successfully!" });
-};
 
 export const updateUserProfile: RequestHandler = async (req, res) => {
-   const { businessAddress, businessName,
+  const {
+    businessAddress,
+    businessName,
     bussinessPermit,
     associationIdNumber,
     nationality,
@@ -227,11 +193,47 @@ export const updateUserProfile: RequestHandler = async (req, res) => {
     state,
     homeAddress,
     workshopAddress,
-    address, firstName, lastName} = req.body
-  let user = await userModel.findByIdAndUpdate(req.user.id, {firstName, lastName});
-    if(!user){
-      user = await mechanicModel.findByIdAndUpdate(req.user.id, {businessAddress, address, homeAddress, workshopAddress, state, companyImage, nationality, associationIdCard, associationIdNumber, bussinessPermit, businessName})
-    }
-    if(!user) return sendErrorRes(res, "User record not found!", 404);
-  res.json({ message: "Profile updated successfully!"})
+    address,
+    firstName,
+    lastName
+  } = req.body;
+
+  // First, try to update the user
+  let user = await userModel.findByIdAndUpdate(
+    req.user.id,
+    { firstName, lastName },
+    { new: true } // This option returns the updated document
+  );
+
+  // If user is not found, try updating the mechanic
+  if (!user) {
+    user = await mechanicModel.findByIdAndUpdate(
+      req.user.id,
+      {
+        businessAddress,
+        businessName,
+        bussinessPermit,
+        associationIdNumber,
+        nationality,
+        associationIdCard,
+        companyImage,
+        state,
+        homeAddress,
+        workshopAddress,
+        address,
+      },
+      { new: true } // This option returns the updated document
+    );
+  }
+  // If neither user nor mechanic is found, return an error response
+  if (!user) return sendErrorRes(res, "User record not found!", 404);
+
+  // Return a success response with the updated user profile
+  res.json({ message: "Profile updated successfully!" });
+}
+
+export const sendProfile: RequestHandler = async (req, res) => {
+  res.json({
+    profile: req.user,
+  });
 }
