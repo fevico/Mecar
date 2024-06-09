@@ -92,8 +92,6 @@ carRouter.patch('/:carId', isAuth, updateCarDetails)
  *       required: true 
  *       content:
  *         application/json:
- *           schema:
- *              $ref: '#/components/schemas/Car'
  *     responses:
  *       "200":
  *         description: Car details found

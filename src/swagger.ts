@@ -81,77 +81,96 @@ const options = {
                         
                     }
                 },
-                updateMechanic:{
+                updateUser:{
                     type: "object",
-                    required: ["companyImage", "firstName", "lastName", "address", "workshopAddress", "homeAddress", "state", "associationIdCard", "associationIdNumber", "nationality", "businessAddress", "businessName", "bussinessPermit"],
+                    // required: ["mechanicDetails"],
                     properties:{
-                        businessAddress:{ 
-                            type: "string",
-                            format: "name",
-                            default: "los agelis califonia",
-                            description: "User's business address"
+                        firtName: {
+                            type: 'string',
+                            format: 'name',
+                            default: 'John',
+                            description: 'User\'s first name'
                         },
-                        businessName:{ 
-                            type: "string",
-                            format: "name",
-                            default: "sunny mech",
-                            description: "User's business name"
+                        lastName: {
+                            type: 'string',
+                            format: 'name',
+                            default: 'Doe',
+                            description: 'User\'s last name'
                         },
-                        bussinessPermit:{ 
-                            type: "string",
-                            format: "name",
-                            default: "sunny mech",
-                            description: "User's business permit"
-                        },
-                        associationIdNumber:{ 
-                            type: "number",
-                            format: "name",
-                            default: "3456789",
-                            description: "User's association id number"
-                        },
-                        nationality:{ 
-                            type: "string",
-                            format: "name",
-                            default: "Nigeria",
-                            description: "User's nationality"
-                        },
-                        associationIdCard:{ 
-                            type: "string",
-                            format: "name",
-                            default: "Nigeria",
-                            description: "User's association Id Card"
-                        },
-                        companyImage:{ 
-                            type: "string",
-                            format: "name",
-                            default: "Image 1",
-                            description: "User's association company image"
-                        },
-                        state:{ 
-                            type: "string",
-                            format: "name",
-                            default: "Image 1",
-                            description: "User's company image"
-                        },
-                        homeAddress:{ 
-                            type: "string",
-                            format: "name",
-                            default: "No 11 surulere",
-                            description: "User's home address"
-                        },
-                        workshopAddress:{ 
-                            type: "string",
-                            format: "name",
-                            default: "No 15 ojuelegbga",
-                            description: "User's work shop address"
-                        },
-                        address:{ 
-                            type: "string",
-                            format: "name",
-                            default: "No 15 ojuelegbga",
-                            description: "User's address"
-                        },
-                    }
+                        mechanicDetails: {
+                            "type": "object",
+                            "properties": {
+                                businessAddress:{ 
+                                    type: "string",
+                                    format: "name",
+                                    default: "los agelis califonia",
+                                    description: "User's business address"
+                                },
+                                businessName:{ 
+                                    type: "string",
+                                    format: "name",
+                                    default: "sunny mech",
+                                    description: "User's business name"
+                                },
+                                bussinessPermit:{ 
+                                    type: "string",
+                                    format: "name",
+                                    default: "sunny mech",
+                                    description: "User's business permit"
+                                },
+                                associationIdNumber:{ 
+                                    type: "number",
+                                    format: "name",
+                                    default: "3456789",
+                                    description: "User's association id number"
+                                },
+                                nationality:{ 
+                                    type: "string",
+                                    format: "name",
+                                    default: "Nigeria",
+                                    description: "User's nationality"
+                                },
+                                associationIdCard:{ 
+                                    type: "string",
+                                    format: "name",
+                                    default: "Nigeria",
+                                    description: "User's association Id Card"
+                                },
+                                companyImage:{ 
+                                    type: "string",
+                                    format: "name",
+                                    default: "Image 1",
+                                    description: "User's association company image"
+                                },
+                                state:{ 
+                                    type: "string",
+                                    format: "name",
+                                    default: "Image 1",
+                                    description: "User's company image"
+                                },
+                                homeAddress:{ 
+                                    type: "string",
+                                    format: "name",
+                                    default: "No 11 surulere",
+                                    description: "User's home address"
+                                },
+                                workshopAddress:{ 
+                                    type: "string",
+                                    format: "name",
+                                    default: "No 15 ojuelegbga",
+                                    description: "User's work shop address"
+                                },
+                                address:{ 
+                                    type: "string",
+                                    format: "name",
+                                    default: "No 15 ojuelegbga",
+                                    description: "User's address"
+                                },
+                            },
+                            "required": ["bussinessPermit", "workshopAddress", "associationIdNumber"]
+                        }
+                        
+                    },
                 },
                 Category:{
                     type: "object",
@@ -172,6 +191,26 @@ const options = {
                         
                     }
                 },
+                SubCategory:{
+                    type: "object",
+                    required: ["name", "categoryId"],
+                    properties:{
+                        name:{ 
+                            type: "string",
+                            format: "name",
+                            default: "Car Maintanace",
+                            description: "subCategory name"
+                        },
+                        categoryId:{ 
+                            type: "number",
+                            format: "name",
+                            default: "234567hbfvb",
+                            description: "CategoryId"
+                        },
+                        
+                    }
+                },
+
             },
             responses:{
                 200:{
@@ -215,6 +254,7 @@ const options = {
         "./src/routes/auth.ts",
         "./src/routes/car.ts",
         "./src/routes/category.ts",
+        "./src/routes/subCategory.ts",
    ]
 };
 

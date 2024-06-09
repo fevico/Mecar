@@ -24,15 +24,10 @@ authRouter.get('/profile', isAuth, sendProfile)
 /**
  * @swagger
  * tags:
- *   name: updateMechanic
- *   description: Api endpoint to update mechanic profile
+ *   name: updateUser
+ *   description: Api endpoint to update user's profile
  */
 /**
- * @swagger
- * tags:
- *   name: updateCarowners
- *   description: Api endpoint to update car owner's profile
- */
 
 /**
  * @swagger
@@ -240,17 +235,17 @@ authRouter.get('/profile', isAuth, sendProfile)
 
 /**
  * @swagger
- * /auth/update-me:
- *   patch:
- *     summary: Update mechanic profile
+ * /auth/update-profile:
+ *   put:
+ *     summary: Update user profile
  *     tags:
- *       - updateMechanic
+ *       - updateUser
  *     requestBody:
  *       required: true 
  *       content:
  *         application/json:
  *           schema:
- *              $ref: '#/components/schemas/updateMechanic'
+ *              $ref: '#/components/schemas/updateUser'
  *     responses:
  *       "200":
  *         description: Profile updated successfully
@@ -304,47 +299,21 @@ authRouter.get('/profile', isAuth, sendProfile)
  *                   example: Internal server error
  */
 
-/**
- * @swagger
- * /auth/update-profile:
- *   patch:
- *     summary: update car owner's profile
- *     tags:
- *       - updateCarowners
- *     requestBody:
- *       required: true 
- *       content:
- *         application/json:
- *           schema:
- *              $ref: '#/components/schemas/updateCarowners'
- *     responses:
- *       "200":
- *         description: Token verified successfully
- *       "400":
- *         description: Bad request
- *       "422":
- *         description: Unprocessable request
- *       "403":
- *         description: Unauthorized request
- *       "500":
- *         description: Internal server error
- */
+
 /**
  * @swagger
  * /auth/profile:
  *   get:
- *     summary: Send uers profile 
+ *     summary: Send users profile 
  *     tags:
  *       - Users
  *     requestBody:
  *       required: true 
  *       content:
  *         application/json:
- *           schema:
- *              $ref: '#/components/schemas/Users'
  *     responses:
  *       "200":
- *         description: Token verified successfully
+ *         description: Profile fetched successfully
  *       "400":
  *         description: Bad request
  *       "422":

@@ -215,7 +215,7 @@ categoryRouter.delete('/:catId', deleteCategory)
 
 /**
  * @swagger
- * /category/{carId}:
+ * /category/{catId}:
  *   delete:
  *     summary: Delete category details
  *     tags:

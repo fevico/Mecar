@@ -1,6 +1,6 @@
 import { RequestHandler } from "express";
 import TokenModel from "src/model/authToken";
-import userModel from "src/model/carOwner";
+import userModel from "src/model/user";
 import mechanicModel from "src/model/mechanic";
 import { generateToken, sendErrorRes } from "src/utils/helper";
 import {
@@ -11,44 +11,43 @@ import {
 import jwt from "jsonwebtoken";
 import ForgetPasswordTokenModel from "src/model/passwordResetToken";
 
-
 export const create: RequestHandler = async (req, res) => {
   const { firstName, lastName, email, password, phoneNumber, role } = req.body;
 
-  if (!role) {
-    return sendErrorRes(res, "Role is required", 400);
-  }
+  // if (!role) {
+  //   return sendErrorRes(res, "Role is required", 400);
+  // }
 
   const token = generateToken();
 
   let user;
-  if (role === "carOwner") {
-    const emailExist = await userModel.findOne({ email });
-    if (emailExist) return sendErrorRes(res, "Email already exist", 400);
-    user = await userModel.create({
-      firstName,
-      lastName,
-      email,
-      password,
-      phoneNumber,
-      role,
-    });
-    await TokenModel.create({ owner: user._id, token });
-  } else if (role === "mechanic") {
-    const emailExist = await mechanicModel.findOne({ email });
-    if (emailExist) return sendErrorRes(res, "Email already exist", 400);
-    user = await mechanicModel.create({
-      firstName,
-      lastName,
-      email,
-      password,
-      phoneNumber,
-      role,
-    });
-    await TokenModel.create({ owner: user._id, token });
-  } else {
-    return sendErrorRes(res, "Role is required", 400);
-  }
+  // if (role === "carOwner") {
+  const emailExist = await userModel.findOne({ email });
+  if (emailExist) return sendErrorRes(res, "Email already exist", 400);
+  user = await userModel.create({
+    firstName,
+    lastName,
+    email,
+    password,
+    phoneNumber,
+    role,
+  });
+  await TokenModel.create({ owner: user._id, token });
+  // } else if (role === "mechanic") {
+  //   const emailExist = await mechanicModel.findOne({ email });
+  //   if (emailExist) return sendErrorRes(res, "Email already exist", 400);
+  //   user = await mechanicModel.create({
+  //     firstName,
+  //     lastName,
+  //     email,
+  //     password,
+  //     phoneNumber,
+  //     role,
+  //   });
+  //   await TokenModel.create({ owner: user._id, token });
+  // } else {
+  // return sendErrorRes(res, "Role is required", 400);
+  // }
 
   res.status(201).json({ user });
   sendVerification(user.email, token);
@@ -62,12 +61,12 @@ export const verifyAuthToken: RequestHandler = async (req, res) => {
   if (!tokenDoc) return sendErrorRes(res, "Invalid token", 422);
 
   // Attempt to find the user by the owner ID stored in the token document
-  let user = await userModel.findById(owner);
+  const user = await userModel.findById(owner);
 
   // If not found in UserModel, check in MechanicModel
-  if (!user) {
-    user = await mechanicModel.findById(owner);
-  }
+  // if (!user) {
+  //   user = await mechanicModel.findById(owner);
+  // }
 
   // If still not found, return an error
   if (!user) return sendErrorRes(res, "Invalid token", 400);
@@ -85,10 +84,10 @@ export const verifyAuthToken: RequestHandler = async (req, res) => {
 
 export const signIn: RequestHandler = async (req, res) => {
   const { email, password } = req.body;
-  let user = await userModel.findOne({ email });
-  if (!user) {
-    user = await mechanicModel.findOne({ email });
-  }
+  const user = await userModel.findOne({ email });
+  // if (!user) {
+  //   user = await mechanicModel.findOne({ email });
+  // }
   if (!user) return sendErrorRes(res, "Email/Password mismatch!", 403);
   const matchPassword = await user.comparePassword(password);
   if (!matchPassword) return sendErrorRes(res, "Email/Password mismatch", 403);
@@ -117,13 +116,12 @@ export const signIn: RequestHandler = async (req, res) => {
   // const refreshToken = jwt.sign(payload, JWT_SECRET);
 };
 
-
 export const generateForgetPasswordToken: RequestHandler = async (req, res) => {
   const { email } = req.body;
-  let user = await userModel.findOne({ email });
-  if (!user) {
-    user = await mechanicModel.findOne({ email });
-  }
+  const user = await userModel.findOne({ email });
+  // if (!user) {
+  //   user = await mechanicModel.findOne({ email });
+  // }
   if (!user) return sendErrorRes(res, "User record not found!", 404);
   const token = generateToken();
   await ForgetPasswordTokenModel.create({ owner: user._id, token });
@@ -135,10 +133,10 @@ export const verifyForgetPasswordToken: RequestHandler = async (req, res) => {
   const { owner, token } = req.body;
   const tokenDoc = await ForgetPasswordTokenModel.findOne({ owner });
   if (!tokenDoc) sendErrorRes(res, "Unauthorized, Invalid Token!", 401);
-  let user = await userModel.findById(owner);
-  if (!user) {
-    user = await mechanicModel.findById(owner);
-  }
+  const user = await userModel.findById(owner);
+  // if (!user) {
+  //   user = await mechanicModel.findById(owner);
+  // }
   if (!user) sendErrorRes(res, "Invalid User!", 422);
   const matchToken = await tokenDoc?.compareToken(token);
   if (!matchToken)
@@ -149,10 +147,10 @@ export const verifyForgetPasswordToken: RequestHandler = async (req, res) => {
 export const resetPassword: RequestHandler = async (req, res) => {
   const { id, password } = req.body;
 
-  let user = await userModel.findById(id);
-  if (!user) {
-    user = await mechanicModel.findById(id);
-  }
+  const user = await userModel.findById(id);
+  // if (!user) {
+  //   user = await mechanicModel.findById(id);
+  // }
 
   // If user is still not found, return an error
   if (!user) {
@@ -180,60 +178,66 @@ export const resetPassword: RequestHandler = async (req, res) => {
   res.json({ message: "Password reset successfully!" });
 };
 
-
 export const updateUserProfile: RequestHandler = async (req, res) => {
-  const {
-    businessAddress,
-    businessName,
-    bussinessPermit,
-    associationIdNumber,
-    nationality,
-    associationIdCard,
-    companyImage,
-    state,
-    homeAddress,
-    workshopAddress,
-    address,
-    firstName,
-    lastName
-  } = req.body;
+  const { mechanicDetails, firstName, lastName } = req.body;
+
+  const user = await userModel.findById(req.user.id);
+  if (!user) return sendErrorRes(res, "User record not found!", 404);
+  if (user.role === "mechanic") {
+    const mechanic = await userModel.findByIdAndUpdate(req.user.id, {
+      mechanicDetails,
+    });
+    if (!mechanic) return sendErrorRes(res, "Mechanic record not found!", 404);
+    // if (!mechanic) return sendErrorRes(res, "Mechanic record not found!", 404);
+    // mechanic.firstName = firstName;
+    // mechanic.lastName = lastName;
+  } else {
+    const carOwner = await userModel.findByIdAndUpdate(req.user.id, {
+      firstName,
+      lastName,
+    });
+    if (!carOwner) return sendErrorRes(res, "Car Owner record not found!", 404);
+    // if (!mechanic) return sendErrorRes(res, "Mechanic record not found!", 404);
+    // mechanic.firstName = firstName;
+    // mechanic.lastName = lastName;
+  }
 
   // First, try to update the user
-  let user = await userModel.findByIdAndUpdate(
-    req.user.id,
-    { firstName, lastName },
-    { new: true } // This option returns the updated document
-  );
+  // let user = await userModel.findByIdAndUpdate(
+  //   req.user.id,
+  //   { firstName, lastName },
+  //   { new: true } // This option returns the updated document
+  // );
 
   // If user is not found, try updating the mechanic
-  if (!user) {
-    user = await mechanicModel.findByIdAndUpdate(
-      req.user.id,
-      {
-        businessAddress,
-        businessName,
-        bussinessPermit,
-        associationIdNumber,
-        nationality,
-        associationIdCard,
-        companyImage,
-        state,
-        homeAddress,
-        workshopAddress,
-        address,
-      },
-      { new: true } // This option returns the updated document
-    );
-  }
+  // if (!user) {
+  //   user = await mechanicModel.findByIdAndUpdate(
+  //     req.user.id,
+  //     {
+  //       businessAddress,
+  //       businessName,
+  //       bussinessPermit,
+  //       associationIdNumber,
+  //       nationality,
+  //       associationIdCard,
+  //       companyImage,
+  //       state,
+  //       homeAddress,
+  //       workshopAddress,
+  //       address,
+  //     },
+  //     { new: true } // This option returns the updated document
+  // );
+  // }
   // If neither user nor mechanic is found, return an error response
-  if (!user) return sendErrorRes(res, "User record not found!", 404);
+  // if (!user) return sendErrorRes(res, "User record not found!", 404);
 
   // Return a success response with the updated user profile
   res.json({ message: "Profile updated successfully!" });
-}
+};
 
 export const sendProfile: RequestHandler = async (req, res) => {
   res.json({
     profile: req.user,
   });
-}
+};
