@@ -10,6 +10,7 @@ import carRouter from "./routes/car";
 import categoryRouter from "./routes/category";
 import subCategoryRouter from "./routes/subCategory";
 import serviceRouter from "./routes/service";
+import maintenaceRouter from "./routes/mainteance";
 
 const app = express();
 
@@ -24,6 +25,7 @@ app.use("/car", carRouter);
 app.use("/category", categoryRouter);
 app.use("/subCategory", subCategoryRouter);
 app.use("/service", serviceRouter);
+app.use('/maintenance', maintenaceRouter)
 
 const spec = swaggerJsDoc(options);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(spec));

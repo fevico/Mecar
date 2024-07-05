@@ -210,6 +210,37 @@ const options = {
                         
                     }
                 },
+                Service:{
+                    type: "object",
+                    required: ["title", "category", "description", "price"],
+                    properties:{
+                        title:{ 
+                            type: "string",
+                            format: "name",
+                            default: "Car Maintanace",
+                            description: "mechanic's service title"
+                        },
+                        category:{ 
+                            type: "objectId",
+                            format: "name",
+                            default: "234567hbfvb",
+                            description: "Category od the service"
+                        },
+                        description:{ 
+                            type: "string",
+                            format: "name",
+                            default: "this is my sevice",
+                            description: "Service description"
+                        },
+                        price:{ 
+                            type: "number",
+                            format: "name",
+                            default: "10,000",
+                            description: "Service price"
+                        },
+                        
+                    }
+                },
 
             },
             responses:{
@@ -255,6 +286,7 @@ const options = {
         "./src/routes/car.ts",
         "./src/routes/category.ts",
         "./src/routes/subCategory.ts",
+        "./src/routes/service.ts",
    ]
 };
 

@@ -88,10 +88,6 @@ carRouter.patch('/:carId', isAuth, updateCarDetails)
  *     summary: ger car details
  *     tags:
  *       - Car
- *     requestBody:
- *       required: true 
- *       content:
- *         application/json:
  *     responses:
  *       "200":
  *         description: Car details found
