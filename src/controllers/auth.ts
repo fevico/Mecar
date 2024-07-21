@@ -14,10 +14,6 @@ import ForgetPasswordTokenModel from "src/model/passwordResetToken";
 export const create: RequestHandler = async (req, res) => {
   const { firstName, lastName, email, password, phoneNumber, role } = req.body;
 
-  // if (!role) {
-  //   return sendErrorRes(res, "Role is required", 400);
-  // }
-
   const token = generateToken();
 
   let user;
@@ -50,7 +46,7 @@ export const create: RequestHandler = async (req, res) => {
   // }
 
   res.status(201).json({ user });
-  sendVerification(user.email, token);
+  sendVerification(user.email, token, user.firstName);
 };
 
 export const verifyAuthToken: RequestHandler = async (req, res) => {
@@ -85,10 +81,9 @@ export const verifyAuthToken: RequestHandler = async (req, res) => {
 export const signIn: RequestHandler = async (req, res) => {
   const { email, password } = req.body;
   const user = await userModel.findOne({ email });
-  // if (!user) {
-  //   user = await mechanicModel.findOne({ email });
-  // }
+  
   if (!user) return sendErrorRes(res, "Email/Password mismatch!", 403);
+  if(!user.verified) return sendErrorRes(res, "Email not verified!", 403);
   const matchPassword = await user.comparePassword(password);
   if (!matchPassword) return sendErrorRes(res, "Email/Password mismatch", 403);
   // const token = jwt.sign({_id: user._id, role: user.role}, process.env.JWT_SECRET as string, {expiresIn: "1h"})
@@ -101,8 +96,7 @@ export const signIn: RequestHandler = async (req, res) => {
     { id: user._id, role: user.role },
     process.env.JWT_SECRET as string
   );
-  if (!user.tokens) user.tokens = [refreshToken];
-  else user.tokens.push(refreshToken);
+  user.token = refreshToken;
   await user.save();
   res.json({
     profile: {
@@ -125,7 +119,7 @@ export const generateForgetPasswordToken: RequestHandler = async (req, res) => {
   if (!user) return sendErrorRes(res, "User record not found!", 404);
   const token = generateToken();
   await ForgetPasswordTokenModel.create({ owner: user._id, token });
-  sendForgetPasswordToken(user.email, token);
+  sendForgetPasswordToken(user.email, token, user.firstName);
   res.json({ message: "Token sent to email!" });
 };
 

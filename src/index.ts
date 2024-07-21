@@ -1,7 +1,7 @@
-import "dotenv/config";
 import "express-async-errors";
-import "src/db";
 import express from "express";
+import "dotenv/config";
+import "src/db";
 import swaggerUi from "swagger-ui-express";
 import swaggerJsDoc from "swagger-jsdoc";
 import options from "./swagger";

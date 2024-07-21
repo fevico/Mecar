@@ -147,6 +147,7 @@ categoryRouter.delete('/:catId', deleteCategory)
  *                   type: string
  *                   example: Internal server error
  */
+
 /**
  * @swagger
  * /category/catId/{catId}:

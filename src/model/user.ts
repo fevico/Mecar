@@ -9,7 +9,7 @@ interface userDocument extends Document{
     phoneNumber: number;
     verified: boolean;
     address: string;
-    tokens:string[];
+    token:string;
     role: "mechanic" | "carOwner" | "admin",
     mechanicDetails:{
         businessName: string;
@@ -59,7 +59,7 @@ const userSchema = new Schema<userDocument, {}, methods>({
     address:{
         type: String,
     },
-    tokens: [ String],
+    token: String,
     role: {type: String, enum: ['mechanic', 'carOwner', 'admin'], required: true, default: 'carOwner'},
     mechanicDetails:{
         businessName: String,

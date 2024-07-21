@@ -1,13 +1,15 @@
-import { ObjectId, Schema, model } from "mongoose";
+import { ObjectId, Schema, model, Document } from "mongoose";
 
-interface ServicesDocument{
+interface ServicesDocument extends Document{
     title: string;
     category: ObjectId;
     mechanicId: ObjectId
     description: string;
     price: number;
     workDays: string[];
+    location: string;    
 }
+
 
 const serviceSchema = new Schema<ServicesDocument>({
     title: { type: String, required: true},
@@ -18,7 +20,8 @@ const serviceSchema = new Schema<ServicesDocument>({
     workDays: [{
         type: String,
         enum: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
-    }]
+    }],
+    location: { type: String, required: true}
 }, {timestamps: true})
 
 const serviceModel = model("Service", serviceSchema)

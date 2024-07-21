@@ -132,3 +132,76 @@ export const deleteService: RequestHandler = async (req, res) => {
     if (!deleteService) return res.status(404).json({ message: "Service not found" });
     return res.status(200).json({ message: "Service deleted successfully" });
 }
+
+export const findNearestServices: RequestHandler = async (req, res) => {
+    try {
+        const { latitude, longitude } = req.query;
+
+        // Validate input
+        if (!latitude || !longitude) {
+            return res.status(400).json({ error: 'Latitude and longitude are required' });
+        }
+
+        const lat = Number(latitude);
+        const lng = Number(longitude);
+
+        if (isNaN(lat) || isNaN(lng)) {
+            return res.status(400).json({ error: 'Latitude and longitude must be valid numbers' });
+        }
+
+        // Perform the geospatial query
+        const services = await serviceModel.find({
+            location: {
+                $near: {
+                    $geometry: {
+                        type: "Point",
+                        coordinates: [lng, lat]
+                    },
+                    $maxDistance: 5000, // 5 km
+                    $minDistance: 100   // 100 m
+                }
+            }
+        }).limit(10); // Limit the number of results to 10
+
+        return res.status(200).json({ services });
+    } catch (error) {
+        console.error('Error finding nearest services:', error);
+        return res.status(500).json({ error: 'An error occurred while finding nearest services' });
+    }
+}
+
+// export const findNearestServices: RequestHandler = async (req, res) => {
+//     const { latitude, longitude, title, category } = req.query;
+
+//     // Build the query object
+//     const query: any = {
+//         location: {
+//             $near: {
+//                 $geometry: {
+//                     type: "Point",
+//                     coordinates: [Number(longitude), Number(latitude)],
+//                 },
+//                 $maxDistance: 5000, // 5 km
+//                 $minDistance: 100,  // 100 m
+//             }
+//         }
+//     };
+
+//     // Add title filter if provided
+//     if (title) {
+//         query.title = { $regex: title, $options: 'i' }; // case-insensitive match
+//     }
+
+//     // Add category filter if provided
+//     if (category) {
+//         query.category = { $regex: category, $options: 'i' }; // case-insensitive match
+//     }
+
+//     try {
+//         const services = await serviceModel.find(query).limit(10);
+//         return res.status(200).json({ services });
+//     } catch (error) {
+//         console.error('Error finding services:', error);
+//         return res.status(500).json({ error: 'Internal server error' });
+//     }
+// };
