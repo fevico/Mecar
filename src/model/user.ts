@@ -10,6 +10,7 @@ interface userDocument extends Document{
     verified: boolean;
     address: string;
     token:string;
+    googleId?: string;
     role: "mechanic" | "carOwner" | "admin",
     mechanicDetails:{
         businessName: string;
@@ -59,6 +60,7 @@ const userSchema = new Schema<userDocument, {}, methods>({
     address:{
         type: String,
     },
+    googleId: {type: String, unique: true},
     token: String,
     role: {type: String, enum: ['mechanic', 'carOwner', 'admin'], required: true, default: 'carOwner'},
     mechanicDetails:{

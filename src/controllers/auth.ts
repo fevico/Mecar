@@ -10,6 +10,7 @@ import {
 } from "src/utils/mail";
 import jwt from "jsonwebtoken";
 import ForgetPasswordTokenModel from "src/model/passwordResetToken";
+import { OAuth2Client } from "google-auth-library";
 
 export const create: RequestHandler = async (req, res) => {
   const { firstName, lastName, email, password, phoneNumber, role } = req.body;
@@ -235,3 +236,4 @@ export const sendProfile: RequestHandler = async (req, res) => {
     profile: req.user,
   });
 };
+

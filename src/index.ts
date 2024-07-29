@@ -11,6 +11,8 @@ import categoryRouter from "./routes/category";
 import subCategoryRouter from "./routes/subCategory";
 import serviceRouter from "./routes/service";
 import maintenaceRouter from "./routes/mainteance";
+import withdrawRouter from "./routes/withdraw";
+import oauthRouter from "./routes/google";
 
 const app = express();
 
@@ -26,6 +28,8 @@ app.use("/category", categoryRouter);
 app.use("/subCategory", subCategoryRouter);
 app.use("/service", serviceRouter);
 app.use('/maintenance', maintenaceRouter)
+app.use('/withdrawer', withdrawRouter)
+app.use('/oauth', oauthRouter)
 
 const spec = swaggerJsDoc(options);
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(spec));
