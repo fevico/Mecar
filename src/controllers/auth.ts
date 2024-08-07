@@ -1,7 +1,6 @@
 import { RequestHandler } from "express";
 import TokenModel from "src/model/authToken";
 import userModel from "src/model/user";
-import mechanicModel from "src/model/mechanic";
 import { generateToken, sendErrorRes } from "src/utils/helper";
 import {
   sendForgetPasswordToken,
@@ -10,7 +9,6 @@ import {
 } from "src/utils/mail";
 import jwt from "jsonwebtoken";
 import ForgetPasswordTokenModel from "src/model/passwordResetToken";
-import { OAuth2Client } from "google-auth-library";
 
 export const create: RequestHandler = async (req, res) => {
   const { firstName, lastName, email, password, phoneNumber, role } = req.body;
@@ -30,24 +28,9 @@ export const create: RequestHandler = async (req, res) => {
     role,
   });
   await TokenModel.create({ owner: user._id, token });
-  // } else if (role === "mechanic") {
-  //   const emailExist = await mechanicModel.findOne({ email });
-  //   if (emailExist) return sendErrorRes(res, "Email already exist", 400);
-  //   user = await mechanicModel.create({
-  //     firstName,
-  //     lastName,
-  //     email,
-  //     password,
-  //     phoneNumber,
-  //     role,
-  //   });
-  //   await TokenModel.create({ owner: user._id, token });
-  // } else {
-  // return sendErrorRes(res, "Role is required", 400);
-  // }
-
-  res.status(201).json({ user });
+  
   sendVerification(user.email, token, user.firstName);
+  res.status(201).json({id: user._id, token, message: "User created successfully" });
 };
 
 export const verifyAuthToken: RequestHandler = async (req, res) => {
@@ -197,37 +180,7 @@ export const updateUserProfile: RequestHandler = async (req, res) => {
     // mechanic.lastName = lastName;
   }
 
-  // First, try to update the user
-  // let user = await userModel.findByIdAndUpdate(
-  //   req.user.id,
-  //   { firstName, lastName },
-  //   { new: true } // This option returns the updated document
-  // );
 
-  // If user is not found, try updating the mechanic
-  // if (!user) {
-  //   user = await mechanicModel.findByIdAndUpdate(
-  //     req.user.id,
-  //     {
-  //       businessAddress,
-  //       businessName,
-  //       bussinessPermit,
-  //       associationIdNumber,
-  //       nationality,
-  //       associationIdCard,
-  //       companyImage,
-  //       state,
-  //       homeAddress,
-  //       workshopAddress,
-  //       address,
-  //     },
-  //     { new: true } // This option returns the updated document
-  // );
-  // }
-  // If neither user nor mechanic is found, return an error response
-  // if (!user) return sendErrorRes(res, "User record not found!", 404);
-
-  // Return a success response with the updated user profile
   res.json({ message: "Profile updated successfully!" });
 };
 
